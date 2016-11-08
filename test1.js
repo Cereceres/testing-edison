@@ -1,5 +1,9 @@
 var m = require('mraa'); //require mraa
- 
+function sleep(delay) {
+	delay += new Date().getTime();
+	while (new Date() < delay) { }
+}
+try {
 console.log('MRAA Version: ' + m.getVersion());
 let rfid_UART = new m.Uart(0)
 
@@ -25,34 +29,29 @@ serialPort.on("open",function() {
 	 
 console.log("Note: connect Rx and Tx of UART with a wire before use");
 	        
-function sleep(delay) {
-	delay += new Date().getTime();
-	while (new Date() < delay) { }
-}
- 
 console.log("Set UART parameters");
         
 let re1 = rfid_UART.setTimeout(1000,1000,1000);
-console.log("res1:", "res1"+re1);
+console.log("res1:", "res1 "+re1);
 		      
 let re2 = rfid_UART.setBaudRate(9600);
-console.log("res2:", "res2"+re2);
+console.log("res2:", "res2 "+re2);
 				    
 let re3 = rfid_UART.SetNonBlocking(false);
-console.log("res3:", "res3"+re3);
+console.log("res3:", "res3 "+re3);
 						  
 let re4 = rfid_UART.setFlowcontrol(false,false);
-console.log("res4:", "res4"+re4);
+console.log("res4:", "res4 "+re4);
 							        
 let re5 = rfid_UART.setMode(8,0,1);
-console.log("res5:", "res5"+re5);
+console.log("res5:", "res5 "+re5);
 									      
 sleep(200);
 										     
 var value = "AA0003000100048E";
 var t = rfid_UART.writeStr(value);
 sleep(200);
-console.log("res6:", "res6"+ value + t);
+console.log("res6:", "res6 "+ value + t);
 														 
 var result_7 = rfid_UART.readStr(7);
 sleep(200);
@@ -70,17 +69,20 @@ sleep(200);
 
 var res8 = rfid_UART.dataAvailable(8);
 sleep(200);				
-
+console.log('res8 ', res8)
 console.log("res8:", "res8"+res8.toString());
 
 var result_8 = rfid_UART.read(8);
 sleep(200);
+console.log('result_8 ', result_8)
 var StringDecoder = require('string_decoder').StringDecoder;
-var decoder = new StringDecoder('utf-8');
-var text = decoder.write(result_8);
-console.log("res9:",text);		
-
-var StringDecoder = require('string_decoder').StringDecoder;
-var decoder = new StringDecoder('hex');
-var text = decoder.write(result_8);
-console.log("finalmente2",text);
+console.log("utf-: ", new StringDecoder('utf-').write(result_8));
+console.log("hex: ", new StringDecoder('hex').write(result_8));
+console.log("ascii: ",  new StringDecoder('ascii').write(result_8));
+console.log("utf16le: ",  new StringDecoder('utf16le').write(result_8));
+console.log("base64: ",  new StringDecoder('base64').write(result_8));
+console.log("latin1: ",  new StringDecoder('latin1').write(result_8));
+console.log("binary: ",  new StringDecoder('binary').write(result_8));
+} catch (e) {
+    console.log('error was : ',e)
+} 
